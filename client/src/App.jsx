@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import Project from "./components/Project";
 import ContactForm from "./components/ContactForm";
 import projects from "./data/projects";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -11,7 +12,8 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-slate-950 text-white">
       
       {/* ================= HERO ================= */}
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-12">
+      <section id="home" className="max-w-6xl mx-auto px-6 pt-20 pb-12">
+
         <Hero name="Isha" role="Frontend Developer" />
       </section>
 
@@ -46,7 +48,8 @@ function App() {
       </div>
 
       {/* ================= PROJECTS ================= */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section id="projects" className="max-w-6xl mx-auto px-6 py-16">
+
         <h2 className="text-3xl font-bold mb-8">Projects</h2>
 
         <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -62,7 +65,8 @@ function App() {
       </div>
 
       {/* ================= CONTACT ================= */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section id="contact" className="max-w-6xl mx-auto px-6 py-16">
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           
           {/* Left text */}
@@ -76,6 +80,8 @@ function App() {
 
           {/* Right form */}
           <ContactForm />
+          <Navbar />
+
         </div>
       </section>
     </div>
