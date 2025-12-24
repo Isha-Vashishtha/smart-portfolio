@@ -2,8 +2,11 @@ import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
 function Project({ title, description, live, source }) {
   return (
-    <li className="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:border-blue-500 transition duration-300">
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+    <li className="bg-gray-800/60 backdrop-blur border border-gray-700 rounded-2xl p-6
+               hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10
+               transition-all duration-300">
+
+      <h3 className="text-xl font-semibold mb-2 tracking-tight">{title}</h3>
 
       <p className="text-gray-400 text-sm mb-4">{description}</p>
 

@@ -76,11 +76,13 @@ function ContactForm() {
 
         {/* Button */}
         <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold transition"
-        >
-          Send Message
-        </button>
+  type="submit"
+  className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold
+             transition transform hover:scale-[1.02]"
+>
+  Send Message
+</button>
+
       </form>
     </div>
   );
