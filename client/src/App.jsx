@@ -1,90 +1,85 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Project from "./components/Project";
 import ContactForm from "./components/ContactForm";
-import projects from "./data/projects";
-import Navbar from "./components/Navbar";
+import API from "./services/api";
 
-function App() {
-  const [count, setCount] = useState(0);
+import AdminLogin from "./admin/AdminLogin";
+import Dashboard from "./admin/Dashboard";
+import ProtectedRoute from "./admin/ProtectedRoute";
+
+import { useEffect, useState } from "react";
+
+function Portfolio() {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const res = await API.get("/projects");
+      setProjects(res.data);
+      setLoading(false);
+    };
+    fetchProjects();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-slate-950 text-white">
-      
-      {/* ================= HERO ================= */}
-      <section id="home" className="max-w-6xl mx-auto px-6 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Navbar />
 
+      <section id="home" className="max-w-6xl mx-auto px-6 pt-20 pb-12">
         <Hero name="Isha" role="Frontend Developer" />
       </section>
 
-      {/* ================= COUNTER (UTILITY) ================= */}
-      <section className="max-w-6xl mx-auto px-6 py-8">
-        <div className="inline-block bg-gray-800/50 rounded-xl p-4">
-          <h2 className="text-lg font-semibold mb-3">
-            Counter: {count}
-          </h2>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => setCount(count + 1)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm"
-            >
-              Increase
-            </button>
-
-            <button
-              onClick={() => setCount(count - 1)}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm"
-            >
-              Decrease
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= DIVIDER ================= */}
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent" />
-      </div>
-
-      {/* ================= PROJECTS ================= */}
       <section id="projects" className="max-w-6xl mx-auto px-6 py-16">
-
         <h2 className="text-3xl font-bold mb-8">Projects</h2>
 
-        <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <Project key={project.id} {...project} />
-          ))}
-        </ul>
+        {loading ? (
+          <p className="text-gray-400">Loading projects...</p>
+        ) : projects.length === 0 ? (
+          <p className="text-gray-400">No projects yet.</p>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {projects.map((project) => (
+              <Project key={project._id} {...project} />
+            ))}
+          </ul>
+        )}
       </section>
 
-      {/* ================= DIVIDER ================= */}
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent" />
-      </div>
-
-      {/* ================= CONTACT ================= */}
       <section id="contact" className="max-w-6xl mx-auto px-6 py-16">
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-          
-          {/* Left text */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
             <h2 className="text-3xl font-bold mb-4">Contact Me</h2>
-            <p className="text-gray-400 max-w-md">
-              Have a project in mind or want to collaborate?  
-              Feel free to reach out — I usually respond within 24 hours.
+            <p className="text-gray-400">
+              Want to work together or have an idea? Reach out.
             </p>
           </div>
-
-          {/* Right form */}
           <ContactForm />
-          <Navbar />
-
         </div>
       </section>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Portfolio />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
