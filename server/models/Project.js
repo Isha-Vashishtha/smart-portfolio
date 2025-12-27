@@ -6,6 +6,11 @@ const projectSchema = new mongoose.Schema(
     description: { type: String, required: true },
     live: String,
     source: String,
+    status: {
+      type: String,
+      enum: ["draft", "published"],
+      default: "published",
+    },
   },
   { timestamps: true }
 );

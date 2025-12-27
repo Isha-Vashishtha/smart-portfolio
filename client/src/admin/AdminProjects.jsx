@@ -1,50 +1,81 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import API from "../services/api";
 
-function AdminProjects() {
+function AdminProjects({ onEdit }) {
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch all projects
   const fetchProjects = async () => {
-    const res = await API.get("/projects");
-    setProjects(res.data);
+    try {
+      const res = await API.get("/projects");
+      setProjects(res.data);
+    } catch (err) {
+      console.error("Failed to fetch projects:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Delete project
   const deleteProject = async (id) => {
-    if (!confirm("Delete this project?")) return;
+    const confirmDelete = window.confirm("Delete this project?");
+    if (!confirmDelete) return;
 
-    await API.delete(`/projects/${id}`);
-    fetchProjects();
+    try {
+      await API.delete(`/projects/${id}`);
+      fetchProjects(); // refresh list
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Delete failed");
+    }
   };
 
+  // Run once on mount
   useEffect(() => {
     fetchProjects();
   }, []);
 
-  return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Projects</h2>
+  if (loading) {
+    return <p className="text-gray-400">Loading projects...</p>;
+  }
 
-      {projects.length === 0 ? (
-        <p>No projects yet</p>
-      ) : (
-        <ul className="space-y-4">
-          {projects.map((p) => (
-            <li
-              key={p._id}
-              className="bg-gray-800 p-4 rounded flex justify-between"
+  if (projects.length === 0) {
+    return <p className="text-gray-400">No projects yet</p>;
+  }
+
+  return (
+    <ul className="space-y-3">
+      {projects.map((project) => (
+        <li
+          key={project._id}
+          className="bg-gray-800 p-4 rounded flex justify-between items-center"
+        >
+          <div>
+            <h4 className="font-semibold">{project.title}</h4>
+            {project.isPublished === false && (
+              <span className="text-xs text-yellow-400">Draft</span>
+            )}
+          </div>
+
+          <div className="space-x-2">
+            <button
+              onClick={() => onEdit(project)}
+              className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded text-black"
             >
-              <span>{p.title}</span>
-              <button
-                onClick={() => deleteProject(p._id)}
-                className="bg-red-600 px-3 py-1 rounded"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+              Edit
+            </button>
+
+            <button
+              onClick={() => deleteProject(project._id)}
+              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
+            >
+              Delete
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 

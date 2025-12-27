@@ -9,7 +9,10 @@ function PublicProjects() {
     const fetchProjects = async () => {
       try {
         const res = await API.get("/projects");
-        setProjects(res.data);
+        setProjects(
+  res.data.filter((p) => p.status === "published")
+);
+
       } catch (err) {
         console.error(err);
       } finally {

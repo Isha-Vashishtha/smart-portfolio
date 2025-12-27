@@ -8,6 +8,7 @@ import AdminLogin from "./admin/AdminLogin";
 import Dashboard from "./admin/Dashboard";
 import ProtectedRoute from "./admin/ProtectedRoute";
 import PublicProjects from "./components/PublicProjects";
+import { Toaster } from "react-hot-toast";
 
 function Portfolio() {
   return (
@@ -52,21 +53,26 @@ function Portfolio() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Portfolio />} />
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Toaster position="top-right" />
+
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
+
 
 export default App;
