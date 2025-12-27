@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://smart-portfolio-api.onrender.com/api",
 });
+
 
 // Attach token to every request
 API.interceptors.request.use((req) => {

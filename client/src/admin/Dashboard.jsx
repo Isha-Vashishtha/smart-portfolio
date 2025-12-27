@@ -1,29 +1,28 @@
-import { useNavigate } from "react-router-dom";
+import AddProjectForm from "./AddProjectForm";
 import AdminProjects from "./AdminProjects";
 
-const Dashboard = () => {
-  const navigate = useNavigate();
-
+function Dashboard() {
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/admin");
+    window.location.href = "/admin";
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+    <div className="min-h-screen bg-gray-900 text-white p-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <button
           onClick={logout}
-          className="bg-red-600 px-4 py-2 rounded hover:bg-red-700"
+          className="bg-red-600 px-4 py-2 rounded"
         >
           Logout
         </button>
       </div>
 
+      <AddProjectForm onProjectAdded={() => window.location.reload()} />
       <AdminProjects />
     </div>
   );
-};
+}
 
 export default Dashboard;
