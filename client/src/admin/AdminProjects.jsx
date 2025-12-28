@@ -52,35 +52,27 @@ function AdminProjects({ onEdit }) {
           </div>
 
           <div className="space-x-2">
-  <button
-    onClick={() => onEdit(project)}
-    className="bg-yellow-500 px-3 py-1 rounded text-black"
-  >
-    Edit
-  </button>
+            <button
+              onClick={() => onEdit(project)}
+              className="bg-yellow-500 px-3 py-1 rounded text-black"
+            >
+              Edit
+            </button>
 
-  <button
-    onClick={async () => {
-      await API.put(`/projects/${project._id}`, {
-        ...project,
-        status:
-          project.status === "published" ? "draft" : "published",
-      });
-      fetchProjects();
-    }}
-    className="bg-purple-600 px-3 py-1 rounded"
-  >
-    {project.status === "published" ? "Unpublish" : "Publish"}
-  </button>
+            <button
+              onClick={() => toggleStatus(project)}
+              className="bg-indigo-600 px-3 py-1 rounded"
+            >
+              {project.status === "published" ? "Unpublish" : "Publish"}
+            </button>
 
-  <button
-    onClick={() => deleteProject(project._id)}
-    className="bg-red-600 px-3 py-1 rounded"
-  >
-    Delete
-  </button>
-</div>
-
+            <button
+              onClick={() => deleteProject(project._id)}
+              className="bg-red-600 px-3 py-1 rounded"
+            >
+              Delete
+            </button>
+          </div>
         </li>
       ))}
     </ul>
