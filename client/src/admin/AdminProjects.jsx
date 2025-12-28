@@ -5,7 +5,6 @@ function AdminProjects({ onEdit }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all projects
   const fetchProjects = async () => {
     try {
       const res = await API.get("/projects");
@@ -17,32 +16,26 @@ function AdminProjects({ onEdit }) {
     }
   };
 
-  // Delete project
   const deleteProject = async (id) => {
-    const confirmDelete = window.confirm("Delete this project?");
-    if (!confirmDelete) return;
-
-    try {
-      await API.delete(`/projects/${id}`);
-      fetchProjects(); // refresh list
-    } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Delete failed");
-    }
+    if (!window.confirm("Delete this project?")) return;
+    await API.delete(`/projects/${id}`);
+    fetchProjects();
   };
 
-  // Run once on mount
+  const toggleStatus = async (project) => {
+    await API.put(`/projects/${project._id}`, {
+      status: project.status === "published" ? "draft" : "published",
+    });
+    fetchProjects();
+  };
+
   useEffect(() => {
     fetchProjects();
   }, []);
 
-  if (loading) {
-    return <p className="text-gray-400">Loading projects...</p>;
-  }
-
-  if (projects.length === 0) {
+  if (loading) return <p className="text-gray-400">Loading projects...</p>;
+  if (projects.length === 0)
     return <p className="text-gray-400">No projects yet</p>;
-  }
 
   return (
     <ul className="space-y-3">
@@ -53,22 +46,29 @@ function AdminProjects({ onEdit }) {
         >
           <div>
             <h4 className="font-semibold">{project.title}</h4>
-            {project.isPublished === false && (
-              <span className="text-xs text-yellow-400">Draft</span>
-            )}
+            <span className="text-xs text-yellow-400">
+              {project.status}
+            </span>
           </div>
 
           <div className="space-x-2">
             <button
               onClick={() => onEdit(project)}
-              className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded text-black"
+              className="bg-yellow-500 px-3 py-1 rounded text-black"
             >
               Edit
             </button>
 
             <button
+              onClick={() => toggleStatus(project)}
+              className="bg-indigo-600 px-3 py-1 rounded"
+            >
+              {project.status === "published" ? "Unpublish" : "Publish"}
+            </button>
+
+            <button
               onClick={() => deleteProject(project._id)}
-              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
+              className="bg-red-600 px-3 py-1 rounded"
             >
               Delete
             </button>

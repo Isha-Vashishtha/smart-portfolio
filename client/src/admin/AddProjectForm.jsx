@@ -5,52 +5,48 @@ import toast from "react-hot-toast";
 function AddProjectForm({ selectedProject, onDone }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [liveUrl, setLiveUrl] = useState("");
-  const [codeUrl, setCodeUrl] = useState("");
+  const [live, setLive] = useState("");
+  const [source, setSource] = useState("");
+  const [status, setStatus] = useState("published");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!selectedProject) {
       setTitle("");
       setDescription("");
-      setLiveUrl("");
-      setCodeUrl("");
+      setLive("");
+      setSource("");
+      setStatus("published");
       return;
     }
 
-    setTitle(selectedProject.title ?? "");
-    setDescription(selectedProject.description ?? "");
-    setLiveUrl(selectedProject.liveUrl ?? "");
-    setCodeUrl(selectedProject.codeUrl ?? "");
+    setTitle(selectedProject.title);
+    setDescription(selectedProject.description);
+    setLive(selectedProject.live || "");
+    setSource(selectedProject.source || "");
+    setStatus(selectedProject.status);
   }, [selectedProject]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      title,
-      description,
-      liveUrl,
-      codeUrl,
-    };
-
+    const payload = { title, description, live, source, status };
     setSubmitting(true);
 
-try {
-  if (selectedProject && selectedProject._id) {
-    await API.put(`/projects/${selectedProject._id}`, payload);
-    toast.success("Project updated");
-  } else {
-    await API.post("/projects", payload);
-    toast.success("Project added");
-  }
-  onDone();
-} catch (err) {
-  toast.error("Action failed");
-} finally {
-  setSubmitting(false);
-}
-
+    try {
+      if (selectedProject?._id) {
+        await API.put(`/projects/${selectedProject._id}`, payload);
+        toast.success("Project updated");
+      } else {
+        await API.post("/projects", payload);
+        toast.success("Project added");
+      }
+      onDone();
+    } catch {
+      toast.error("Action failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -59,62 +55,20 @@ try {
         {selectedProject ? "Edit Project" : "Add Project"}
       </h3>
 
-      <input
-        className="w-full mb-2 p-2 bg-gray-700 rounded"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
+      <input className="input" value={title} onChange={(e)=>setTitle(e.target.value)} required />
+      <textarea className="input" value={description} onChange={(e)=>setDescription(e.target.value)} required />
 
-      <textarea
-        className="w-full mb-2 p-2 bg-gray-700 rounded"
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-      />
+      <input className="input" placeholder="Live URL" value={live} onChange={(e)=>setLive(e.target.value)} />
+      <input className="input" placeholder="Code URL" value={source} onChange={(e)=>setSource(e.target.value)} />
 
-      <input
-        className="w-full mb-2 p-2 bg-gray-700 rounded"
-        placeholder="Live URL"
-        value={liveUrl}
-        onChange={(e) => setLiveUrl(e.target.value)}
-      />
+      <select className="input" value={status} onChange={(e)=>setStatus(e.target.value)}>
+        <option value="published">Published</option>
+        <option value="draft">Draft</option>
+      </select>
 
-      <input
-        className="w-full mb-2 p-2 bg-gray-700 rounded"
-        placeholder="Code URL"
-        value={codeUrl}
-        
-        onChange={(e) => setCodeUrl(e.target.value)}
-      />
-       <select
-  className="w-full mb-2 p-2 bg-gray-700 rounded"
-  value={selectedProject?.status || "published"}
-  onChange={(e) =>
-    setStatus(e.target.value)
-  }
->
-  <option value="published">Published</option>
-  <option value="draft">Draft</option>
-</select>
-
-      <button
-  disabled={submitting}
-  className={`px-4 py-2 rounded ${
-    submitting
-      ? "bg-gray-500 cursor-not-allowed"
-      : "bg-blue-600"
-  }`}
->
-  {submitting
-    ? "Saving..."
-    : selectedProject
-    ? "Update"
-    : "Add"}
-</button>
-
+      <button disabled={submitting} className="bg-blue-600 px-4 py-2 rounded">
+        {submitting ? "Saving..." : selectedProject ? "Update" : "Add"}
+      </button>
     </form>
   );
 }

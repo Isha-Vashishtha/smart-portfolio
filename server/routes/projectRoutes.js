@@ -32,5 +32,10 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   await Project.findByIdAndDelete(req.params.id);
   res.json({ message: "Deleted" });
 });
-
+router.get("/public", async (req, res) => {
+  const projects = await Project.find({ status: "published" }).sort({
+    createdAt: -1,
+  });
+  res.json(projects);
+});
 export default router;
