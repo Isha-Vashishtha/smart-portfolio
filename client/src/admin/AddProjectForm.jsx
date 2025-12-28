@@ -106,7 +106,7 @@ function AddProjectForm({ selectedProject, onDone }) {
 
       <button
         disabled={submitting}
-        className={`w-full px-4 py-2 rounded font-semibold ${
+        className={`px-4 py-2 rounded font-semibold ${
           submitting
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-600 hover:bg-blue-700"
