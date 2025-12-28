@@ -3,31 +3,25 @@ import AddProjectForm from "./AddProjectForm";
 import AdminProjects from "./AdminProjects";
 
 function Dashboard() {
-  const [editingProject, setEditingProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/admin";
+  const handleDone = () => {
+    setSelectedProject(null);       // 🔥 reset edit mode
+    setRefreshKey((k) => k + 1);    // 🔥 force refetch
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <button onClick={logout} className="bg-red-600 px-4 py-2 rounded">
-          Logout
-        </button>
-      </div>
-
+    <div className="max-w-5xl mx-auto px-6 py-10">
       <AddProjectForm
-        selectedProject={editingProject}
-          onDone={() => {
-            setEditingProject(null);
-          }}
-
+        selectedProject={selectedProject}
+        onDone={handleDone}
       />
 
-      <AdminProjects onEdit={setEditingProject} />
+      <AdminProjects
+        key={refreshKey}
+        onEdit={(project) => setSelectedProject(project)}
+      />
     </div>
   );
 }
