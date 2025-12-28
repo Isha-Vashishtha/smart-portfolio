@@ -8,8 +8,8 @@ function PublicProjects() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await API.get("/projects");
-        setProjects(res.data.filter((p) => p.status === "published"));
+        const res = await API.get("/projects/public");
+        setProjects(res.data);
       } catch (err) {
         console.error(err);
       } finally {
