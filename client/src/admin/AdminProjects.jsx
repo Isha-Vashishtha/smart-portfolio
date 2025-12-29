@@ -22,10 +22,12 @@ function AdminProjects({ onEdit }) {
     fetchProjects();
   };
 
-  const togglePublish = async (id, published) => {
-  await API.put(`/projects/${id}`, { published });
-  fetchProjects();
-};
+  const toggleStatus = async (project) => {
+    await API.put(`/projects/${project._id}`, {
+      status: project.status === "published" ? "draft" : "published",
+    });
+    fetchProjects();
+  };
 
   useEffect(() => {
     fetchProjects();
@@ -57,17 +59,12 @@ function AdminProjects({ onEdit }) {
               Edit
             </button>
 
-            <span className="text-sm text-gray-400">
-  {p.published ? "Published" : "Draft"}
-</span>
-
-<button
-  onClick={() => togglePublish(p._id, !p.published)}
-  className="bg-indigo-600 px-3 py-1 rounded"
->
-  {p.published ? "Unpublish" : "Publish"}
-</button>
-
+            <button
+              onClick={() => toggleStatus(project)}
+              className="bg-indigo-600 px-3 py-1 rounded"
+            >
+              {project.status === "published" ? "Unpublish" : "Publish"}
+            </button>
 
             <button
               onClick={() => deleteProject(project._id)}

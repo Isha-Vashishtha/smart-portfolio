@@ -4,12 +4,10 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// GET all projects (admin)
 router.get("/", async (req, res) => {
-  const projects = await Project.find().sort({ createdAt: -1 });
+  const projects = await Project.find();
   res.json(projects);
 });
-
 
 router.post("/", authMiddleware, async (req, res) => {
   const project = await Project.create(req.body);
@@ -17,14 +15,18 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 router.put("/:id", authMiddleware, async (req, res) => {
-  const project = await Project.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json(project);
-});
+  try {
+    const updated = await Project.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
 
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: "Update failed" });
+  }
+});
 
 router.delete("/:id", authMiddleware, async (req, res) => {
   await Project.findByIdAndDelete(req.params.id);
