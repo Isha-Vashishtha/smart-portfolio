@@ -3,8 +3,8 @@ import axios from "axios";
 const API = axios.create({
   baseURL:
     import.meta.env.MODE === "development"
-      ? "http://localhost:5000/api"
-      : "https://smart-portfolio-api.onrender.com/api",
+      ? "http://localhost:5000"
+      : "https://smart-portfolio-api.onrender.com",
 });
 
 // Attach token to every request
